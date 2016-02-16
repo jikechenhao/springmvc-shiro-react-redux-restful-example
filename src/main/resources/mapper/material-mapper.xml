@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "cn.oneayst.mapper.MaterialMapper">
+    <cache type = "org.mybatis.caches.ehcache.LoggingEhcache"/>
+
+    <select id = "getMaterialNameById" parameterType = "long" resultType = "String">
+        SELECT mt.material_name
+        FROM t_material mt
+        WHERE mt.id = #{materialId}
+    </select>
+
+    <select id = "queryMaterial" parameterType = "long" resultType = "MaterialModel">
+        SELECT
+            mt.id            AS materialId,
+            mt.material_name AS materialName
+        FROM t_material mt
+        WHERE mt.t_module_id = #{moduleId}
+        ORDER BY (mt.material_name) DESC
+    </select>
+
+    <select id = "queryMaterialForPreview" parameterType = "long" resultType = "MaterialSpModel">
+        SELECT
+            mt.id              AS materialId,
+            mt.material_name   AS materialName,
+            sp.id              AS spId,
+            sp.sp_name         AS spName,
+            sp.unit            AS unit,
+            sp.contract_amount AS contractAmount,
+            b.brand_name       AS brandName
+        FROM t_material mt
+            LEFT JOIN (t_sp sp) ON sp.t_material_id = mt.id
+            LEFT JOIN (t_brand b) ON b.id = sp.t_brand_id
+        WHERE mt.t_module_id = #{moduleId}
+    </select>
+
+    <delete id = "deleteMaterial" parameterType = "long">
+        DELETE FROM t_material
+        WHERE id = #{materialId}
+    </delete>
+
+    <delete id = "deleteMaterialByModuleId" parameterType = "long">
+        DELETE FROM t_material
+        WHERE t_module_id = #{moduleId}
+    </delete>
+
+    <update id = "updateMaterial" parameterType = "MaterialModel">
+        UPDATE t_material mt
+        SET mt.material_name = #{materialName}
+        WHERE mt.id = #{materialId}
+    </update>
+
+    <insert id = "createMaterial" parameterType = "MaterialModel" useGeneratedKeys = "true" keyProperty = "materialId">
+        INSERT INTO t_material (material_name, t_module_id) VALUES (#{materialName}, #{moduleId})
+    </insert>
+</mapper>

@@ -1,0 +1,76 @@
+
+.animateHeight-leave.animateHeight-leave-active, .animateHeight-enter.animateHeight-enter-active {
+    -webkit-transition-duration: .5s;
+    -o-transition-duration: .5s;
+    transition-duration: .5s;
+}
+
+.animate-enter.animate-enter-active, .animate-leave, .animateRight-enter.animateRight-enter-active, .animateRight-leave {
+    -webkit-transform: translate(0, 0);
+    -ms-transform: translate(0, 0);
+    -o-transform: translate(0, 0);
+    transform: translate(0, 0);
+}
+
+.animate-enter, .animate-leave.animate-leave-active, .animateRight-enter, .animateRight-leave.animateRight-leave-active {
+    -webkit-transition: -webkit-transform .3s ease-out;
+    -o-transition: -o-transform .3s ease-out;
+    transition: transform .3s ease-out;
+}
+
+.animateHeight-leave.animateHeight-leave-active, .animateHeight-enter.animateHeight-enter-active {
+    -webkit-transition-timing-function: ease;
+    -o-transition-timing-function: ease;
+    transition-timing-function: ease
+}
+
+.modal-dialog {
+    touch-action: none;
+    transform: translate(0, 0);
+    -webkit-transform: translate(0, 0);
+}
+
+.animate-enter, .animate-leave.animate-leave-active {
+    -webkit-transform: translate(0, -100%);
+    -ms-transform: translate(0, -100%);
+    -o-transform: translate(0, -100%);
+    transform: translate(0, -100%);
+}
+
+.animateRight-enter, .animateRight-leave.animateRight-leave-active {
+    -webkit-transform: translate(100%, 0);
+    -ms-transform: translate(100%, 0);
+    -o-transform: translate(100%, 0);
+    transform: translate(100%, 0);
+}
+
+.animate-wrapper {
+    padding-top: 0;
+    overflow:hidden;
+    -webkit-transition: all .5s ease;
+    -moz-transition: all .5s ease;
+    transition: all .5s ease;
+}
+
+.animate-wrapper.animate {
+    padding-top: 10px;
+}
+
+.animate-wrapper > :first-child > :first-child > :first-child {
+    margin-top: -10px;
+}
+
+.animateHeight-enter {
+    margin-top: -100%;
+}
+.animateHeight-enter.animateHeight-enter-active {
+    margin-top: 0;
+}
+
+.animateHeight-leave {
+    margin-top: 0;
+}
+
+.animateHeight-leave.animateHeight-leave-active {
+    margin-top: -100%;
+}

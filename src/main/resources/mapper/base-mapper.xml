@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "cn.oneayst.mapper.BaseMapper">
+	<cache type = "org.mybatis.caches.ehcache.LoggingEhcache"/>
+
+	<select id = "getRoute" resultType = "RouteModel" useCache = "true">
+		SELECT
+		p.project_name AS projectName
+		<choose>
+			<when test = "null != moduleId">
+				,
+				p.id AS projectId,
+				md.module_name AS moduleName
+				FROM (t_module md)
+				INNER JOIN (t_project p) ON p.id = md.t_project_id
+				WHERE md.id = #{moduleId}
+			</when>
+			<when test = "null != materialId">
+				,
+				p.id AS projectId,
+				md.module_name AS moduleName,
+				md.id AS moduleId,
+				mt.material_name AS materialName
+				FROM (t_material mt)
+				INNER JOIN (t_module md) ON md.id = mt.t_module_id
+				INNER JOIN (t_project p) ON p.id = md.t_project_id
+				WHERE mt.id = #{materialId}
+			</when>
+			<otherwise>
+				FROM (t_project p)
+				WHERE p.id = #{projectId}
+			</otherwise>
+		</choose>
+	</select>
+</mapper>

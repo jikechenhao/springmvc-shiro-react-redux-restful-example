@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "cn.oneayst.mapper.LogMapper">
+    <!--<cache/>-->
+
+    <insert id = "createOperLog" parameterType = "OperLogModel">
+        INSERT INTO t_oper_log (account, `host`, method_name, spent_time, occur_time)
+            VALUE (#{account}, #{host}, #{methodName}, #{spentTime}, #{occurTime})
+    </insert>
+
+    <insert id = "createErrLog" parameterType = "ErrLogModel">
+        INSERT INTO t_err_log (account, `host`, method_name, exception)
+            VALUE (#{account}, #{host}, #{methodName}, #{exception})
+    </insert>
+
+    <insert id = "createLoginLog" parameterType = "LoginLogModel">
+        INSERT INTO t_login_log (account, `host`, occur_time, message)
+            VALUE (#{account}, #{host}, #{occurTime}, #{message})
+    </insert>
+</mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+	>
+
+<mapper namespace = "cn.oneayst.mapper.BrandMapper">
+	<cache type = "org.mybatis.caches.ehcache.LoggingEhcache"/>
+
+	<select id = "getBrandByName" resultType = "BrandModel">
+		SELECT b.id AS brandId
+		FROM t_brand b
+		WHERE b.t_project_id = #{projectId} AND b.brand_name = #{brandName}
+	</select>
+
+	<select id = "getBrandNameById" parameterType = "long" resultType = "String">
+		SELECT b.brand_name AS brandName
+		FROM t_brand b
+		WHERE b.id = #{brandId}
+	</select>
+
+	<select id = "queryBrand" parameterType = "long" resultType = "BrandModel">
+		SELECT
+			b.id           AS brandId,
+			b.brand_name   AS brandName,
+			b.t_project_id AS projectId
+		FROM t_brand b
+		WHERE b.t_project_id = #{projectId};
+	</select>
+
+	<delete id = "deleteBrand" parameterType = "long">
+		DELETE FROM t_brand
+		WHERE id = #{brandId}
+	</delete>
+
+	<delete id = "deleteBrandByProjectId" parameterType = "long">
+		DELETE FROM t_brand
+		WHERE t_project_id = #{projectId}
+	</delete>
+
+	<update id = "updateBrand">
+		UPDATE t_brand b
+		SET b.brand_name = #{brandName}
+		WHERE b.id = #{brandId}
+	</update>
+
+	<insert id = "createBrand" useGeneratedKeys = "true" keyProperty = "brandId">
+		INSERT INTO t_brand (brand_name, t_project_id) VALUES (#{brandName}, #{projectId})
+	</insert>
+</mapper>

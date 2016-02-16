@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "cn.oneayst.mapper.OrderMapper">
+    <cache type = "org.mybatis.caches.ehcache.LoggingEhcache"/>
+
+    <resultMap id = "modulePurchaseMap" type = "ModuleModel">
+        <id column = "moduleId" property = "moduleId"/>
+        <result column = "moduleName" property = "moduleName"/>
+        <collection property = "confirmedPurchaseList" ofType = "ConfirmedPurchaseModel">
+            <result column = "applyId" property = "applyId"/>
+            <result column = "materialId" property = "materialId"/>
+            <result column = "spId" property = "spId"/>
+            <result column = "applyAmount" property = "applyAmount"/>
+            <result column = "arrivedAmount" property = "arrivedAmount"/>
+            <result column = "contractAmount" property = "contractAmount"/>
+            <result column = "unitPrice" property = "unitPrice"/>
+            <result column = "totalCost" property = "totalCost"/>
+            <result column = "unit" property = "unit"/>
+            <result column = "materialName" property = "materialName"/>
+            <result column = "spName" property = "spName"/>
+            <result column = "brandName" property = "brandName"/>
+            <result column = "supplier" property = "supplier"/>
+        </collection>
+    </resultMap>
+
+    <select id = "deletable" parameterType = "long" resultType = "Integer">
+        SELECT count(p.id)
+        FROM (t_purchase p)
+        WHERE p.t_apply_id = #{applyId};
+    </select>
+
+    <select id = "queryApplyRecord" resultType = "ApplyRecordModel">
+        SELECT
+        a.id AS applyId,
+        md.module_name AS moduleName,
+        mt.material_name AS materialName,
+        sp.sp_name AS spName,
+        b.brand_name AS brandName,
+        sp.unit AS unit,
+        a.comment AS `comment`,
+        a.apply_user AS applyUser,
+        a.apply_amount AS applyAmount,
+        SUM(p.arrived_amount) AS arrivedAmount,
+        a.serial_no AS serialNO,
+        sp.contract_amount AS contractAmount,
+        COUNT(p.confirmed) AS confirmedCount,
+        COUNT(p.arrived_amount) AS arrivedCount,
+        COUNT(p.id) AS totalPurchaseCount
+        FROM (t_module md)
+        INNER JOIN (t_apply a) ON a.t_module_id = md.id
+        <if test = "null != serialNO">
+            AND a.serial_no = #{serialNO}
+        </if>
+        LEFT JOIN (t_material mt) ON a.t_material_id = mt.id
+        LEFT JOIN (t_sp sp) ON a.t_sp_id = sp.id
+        LEFT JOIN (t_brand b) ON a.t_brand_id = b.id
+        LEFT JOIN (t_purchase p) ON a.id = p.t_apply_id
+        <choose>
+            <when test = "null != projectId">
+                WHERE md.t_project_id = #{projectId}
+            </when>
+            <otherwise>
+                WHERE md.id = #{moduleId}
+            </otherwise>
+        </choose>
+        GROUP BY (a.id)
+    </select>
+
+    <select id = "queryPurchaseRecord" parameterType = "long" resultType = "PurchaseRecordModel">
+        SELECT
+        mt.material_name AS materialName,
+        sp.sp_name AS spName,
+        b.brand_name AS brandName,
+        sp.unit AS unit,
+        a.apply_amount AS applyAmount,
+        p.unit_price AS unitPrice,
+        p.purchase_amount AS purchaseAmount,
+        p.total_cost AS totalCost,
+        p.supplier AS supplier,
+        p.arrived_amount AS arrivedAmount,
+        p.confirmed AS confirmed,
+        p.list_no AS listNo,
+        p.serial_no AS serialNO
+        FROM (t_apply a)
+        RIGHT JOIN (t_purchase p) ON a.id = p.t_apply_id
+        <choose>
+            <when test = "null != serialNO">
+                AND p.serial_no = #{serialNO}
+            </when>
+            <when test = "null != listNO">
+                AND p.list_no = #{listNO}
+            </when>
+        </choose>
+        <if test = "confirmed">
+            AND p.confirmed = TRUE
+        </if>
+        LEFT JOIN (t_material mt) ON a.t_material_id = mt.id
+        LEFT JOIN (t_sp sp) ON a.t_sp_id = sp.id
+        LEFT JOIN (t_brand b) ON a.t_brand_id = b.id
+        <if test = "null != projectId">
+            INNER JOIN (t_module mn) ON mn.t_project_id = #{projectId}
+            AND a.t_module_id = mn.id
+        </if>
+        <if test = "null != applyId">
+            WHERE a.id = #{applyId}
+        </if>
+        ORDER BY (p.list_no) DESC
+    </select>
+
+    <select id = "queryConfirmedPurchase" resultMap = "modulePurchaseMap">
+        SELECT
+        md.id AS moduleId,
+        md.module_name AS moduleName,
+        a.id AS applyId,
+        a.apply_amount AS applyAmount,
+        mt.id AS materialId,
+        mt.material_name AS materialName,
+        sp.id AS spId,
+        sp.sp_name AS spName,
+        sp.unit AS unit,
+        sp.contract_amount AS contractAmount,
+        b.brand_name AS brandName,
+        p.unit_price AS unitPrice,
+        p.total_cost AS totalCost,
+        p.supplier AS supplier,
+        p.arrived_amount AS arrivedAmount
+        FROM (t_module md)
+        INNER JOIN (t_apply a) ON a.t_module_id = md.id
+        INNER JOIN (t_purchase p) ON a.id = p.t_apply_id AND p.confirmed = TRUE
+        <if test = "null != supplier">
+            AND p.supplier = #{supplier}
+        </if>
+        INNER JOIN (t_material mt) ON a.t_material_id = mt.id
+        <if test = "null != materialName">
+            AND mt.material_name = #{materialName}
+        </if>
+        INNER JOIN (t_sp sp) ON a.t_sp_id = sp.id
+        <if test = "null != spName">
+            AND sp.sp_name = #{spName}
+        </if>
+        LEFT JOIN (t_brand b) ON a.t_brand_id = b.id
+        WHERE md.t_project_id = #{projectId}
+        ORDER BY (a.serial_no) DESC
+    </select>
+
+    <select id = "queryPurchase" parameterType = "long" resultType = "PurchaseModel">
+        SELECT
+            p.id              AS purchaseId,
+            p.unit_price      AS unitPrice,
+            p.purchase_amount AS purchaseAmount,
+            p.total_cost      AS totalCost,
+            p.supplier        AS supplier,
+            p.serial_no       AS serialNO,
+            p.confirmed       AS confirmed,
+            p.arrived_amount  AS arrivedAmount,
+            p.list_no         AS listNO
+        FROM (t_purchase p)
+        WHERE p.t_apply_id = #{applyId}
+        ORDER BY (p.list_no) DESC
+    </select>
+
+    <select id = "queryArrived" parameterType = "long" resultType = "ArrivedModel">
+        SELECT
+            p.id             AS purchaseId,
+            p.confirmed      AS confirmed,
+            p.arrived_amount AS arrivedAmount
+        FROM (t_purchase p)
+        WHERE p.t_apply_id = #{applyId}
+    </select>
+
+    <delete id = "deleteApplyRecord" parameterType = "long">
+        DELETE FROM t_apply
+        WHERE id = #{applyId}
+    </delete>
+
+    <delete id = "deleteOrderByModuleId" parameterType = "long">
+        DELETE p FROM (t_purchase p)
+            INNER JOIN (t_apply a) ON a.t_module_id = #{moduleId} AND a.id = p.t_apply_id
+    </delete>
+
+    <delete id = "deleteOrderApplyByModuleId" parameterType = "long">
+        DELETE a FROM (t_apply a)
+        WHERE a.t_module_id = #{moduleId}
+    </delete>
+
+    <update id = "updateArrived" parameterType = "java.util.List">
+        <foreach collection = "list" item = "item" index = "index" open = "" close = "" separator = ";">
+            <choose>
+                <when test = "null != item.arrivedAmount and 0 &lt; item.arrivedAmount">
+                    UPDATE t_purchase
+                    <set>
+                        arrived_amount = #{item.arrivedAmount}
+                    </set>
+                    WHERE id = #{item.purchaseId}
+                </when>
+                <otherwise>
+                    UPDATE t_purchase
+                    <set>
+                        arrived_amount = NULL
+                    </set>
+                    WHERE id = #{item.purchaseId}
+                </otherwise>
+            </choose>
+        </foreach>
+    </update>
+
+    <update id = "verifyPurchase">
+        UPDATE t_purchase p
+        SET p.confirmed = TRUE
+        WHERE p.id = #{purchaseId}
+    </update>
+
+    <insert id = "createApply">
+        INSERT INTO t_apply
+        (apply_amount, `comment`, apply_user, t_module_id, t_material_id, t_sp_id, serial_no, t_brand_id)
+        VALUES
+
+        <foreach item = "item" index = "index" collection = "list" separator = ",">
+            (#{item.applyAmount}, #{item.comment}, #{item.applyUser}, #{item.moduleId}, #{item.materialId},
+            #{item.spId}, #{item.serialNO}, #{item.brandId})
+        </foreach>
+    </insert>
+
+
+    <insert id = "createPurchase">
+        INSERT INTO t_purchase
+        (unit_price, purchase_amount, total_cost, supplier, confirmed, serial_no, list_no, t_apply_id)
+        VALUES
+        <foreach item = "item" index = "index" collection = "list" separator = ",">
+            (#{item.unitPrice}, #{item.purchaseAmount}, #{item.totalCost}, #{item.supplier}, NULL, #{item.serialNO},
+            #{item.listNO}, #{item.applyId})
+        </foreach>
+    </insert>
+</mapper>

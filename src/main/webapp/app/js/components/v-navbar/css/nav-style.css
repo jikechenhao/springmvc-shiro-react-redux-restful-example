@@ -1,0 +1,87 @@
+.vnav-container .nav {
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+    background: #41586e;
+}
+
+.vnav-container .nav .nav {
+    background: #374b5e;
+}
+
+.vnav-container .nav > li {
+    position: relative;
+    line-height: 1.5;
+}
+
+.vnav-container .nav a {
+    cursor: pointer;
+}
+
+.vnav-container .nav > li a {
+    color: #adbece;
+    background: rgba(0, 0, 0, 0);
+}
+
+.vnav-container .nav > li a:hover {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.vnav-container .nav > li li > a {
+    font-weight: normal;
+    font-size: 13px;
+}
+
+.vnav-container .nav > li li > a > .nav-icon {
+    margin-right: 25px;
+}
+
+.vnav-container .nav > li.active > a, .nav > li:hover > a  {
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.05);
+    text-shadow: none;
+}
+
+.vnav-container .nav > li > a {
+    padding: 11px 15px;
+    position: relative;
+    font-weight: bold;
+    font-size: 14px;
+    border-color: rgba(255, 255, 255, 0.05);
+    transition: color .3s ease-in-out 0s;
+}
+
+.vnav-container .nav-icon {
+    margin: -12px 10px -12px -15px;
+    line-height: 44px;
+    width: 44px;
+    float: left;
+    font-size: 14px;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.vnav-container .nav > li > a span:before {
+    position: relative;
+    z-index: 2;
+}
+
+.vnav-container .nav-icon > b {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 0;
+    left: -42px;
+    -webkit-transition: left .25s;
+    transition: left .25s;
+}
+
+.vnav-container .nav > li:hover .nav-icon > b, .vnav-container .nav > li.active .nav-icon > b {
+    left: 0 !important;
+}
+
+.small-glyphicon {
+    font-size: 12px;
+}

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx = "http://www.springframework.org/schema/tx"
+       xmlns = "http://www.springframework.org/schema/beans"
+       xsi:schemaLocation = "http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <bean id = "propertyConfigurer" class = "org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name = "location" value = "classpath:jdbc.properties"/>
+        <property name = "fileEncoding" value = "utf-8"/>
+    </bean>
+
+    <!-- 数据库连接池 -->
+    <bean id = "dataSource" class = "org.apache.ibatis.datasource.pooled.PooledDataSource">
+        <property name = "driver" value = "${driverClassName}"/>
+        <property name = "url" value = "${url}"/>
+        <property name = "username" value = "${username}"/>
+        <property name = "password" value = "${password}"/>
+        <property name = "poolMaximumActiveConnections" value = "200"/>
+        <property name = "poolMaximumIdleConnections" value = "50"/>
+        <property name = "poolTimeToWait" value = "10000"/>
+        <property name = "poolPingEnabled" value = "true"/>
+        <property name = "poolPingQuery" value = "SELECT 1 FROM t_role WHERE 1 = 1 LIMIT 1"/>
+        <property name = "poolPingConnectionsNotUsedFor" value = "0"/>
+    </bean>
+
+    <bean id = "sqlSessionFactory" class = "org.mybatis.spring.SqlSessionFactoryBean">
+        <property name = "dataSource" ref = "dataSource"/>
+        <!-- 自动匹配Mapper映射文件 -->
+        <property name = "mapperLocations" value = "classpath:mapper/*-mapper.xml"/>
+        <property name = "typeAliasesPackage" value = "cn.oneayst.model"/>
+    </bean>
+    <!-- 通过扫描的模式，扫描目录在com.oneayst.mapper目录下所有的mapper -->
+    <bean class = "org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name = "basePackage" value = "cn.oneayst.mapper"/>
+    </bean>
+    <!-- 事务配置 -->
+    <bean id = "transactionManager" class = "org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name = "dataSource" ref = "dataSource"/>
+    </bean>
+    <tx:annotation-driven transaction-manager = "transactionManager"/>
+</beans>

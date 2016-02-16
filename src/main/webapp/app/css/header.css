@@ -1,0 +1,31 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-weight: normal;
+}
+
+div.row {
+    margin: 0;
+}
+
+.nav {
+    background-color: #2E3D43;
+    padding: 5px 20px;
+    text-align: center;
+}
+
+ol.breadcrumb {
+    color: #fff;
+    background-color: #2E3D43;
+    margin-bottom: 5px;
+}
+
+ol.breadcrumb > li {
+    display: inline-block;
+}
+
+ol.breadcrumb > li > a {
+    color: #fff;
+    background-color: #2E3D43;
+}

@@ -1,0 +1,12 @@
+.hnav-container > .nav > li {
+    cursor: pointer;
+}
+
+.hnav-container > .nav > li > a{
+    padding: 15px;
+    color: #adbece;
+}
+
+.hnav-container > .nav > li:hover {
+    background: #111;
+}

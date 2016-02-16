@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "cn.oneayst.mapper.SpMapper">
+	<cache type = "org.mybatis.caches.ehcache.LoggingEhcache"/>
+
+	<select id = "getSpNameById" parameterType = "long" resultType = "String">
+		SELECT sp.sp_name
+		FROM t_sp sp
+		WHERE sp.id = #{spId}
+	</select>
+
+	<select id = "querySp" resultType = "SpModel">
+		SELECT
+			sp.id               AS spId,
+			sp.sp_name          AS spName,
+			sp.unit             AS unit,
+			sp.contract_amount  AS contractAmount,
+			SUM(a.apply_amount) AS totalApplyAmount,
+			b.brand_name        AS brandName
+		FROM (t_sp sp)
+			LEFT JOIN (t_apply a) ON a.t_sp_id = sp.id
+			LEFT JOIN (t_brand b) ON b.id = sp.t_brand_id
+		WHERE sp.t_material_id = #{materialId}
+		GROUP BY (sp.id)
+		ORDER BY (sp.sp_name) DESC
+	</select>
+
+	<delete id = "deleteSp" parameterType = "long">
+		DELETE FROM t_sp
+		WHERE id = #{spId}
+	</delete>
+
+	<delete id = "deleteSpByModuleId" parameterType = "long">
+		DELETE sp FROM (t_sp sp)
+			INNER JOIN (t_material mt) ON mt.t_module_id = #{moduleId} AND mt.id = sp.t_material_id
+	</delete>
+
+	<update id = "updateSp" parameterType = "SpModel">
+		UPDATE t_sp sp
+		SET sp.sp_name         = #{spName},
+			sp.unit            = #{unit},
+			sp.contract_amount = #{contractAmount}
+		WHERE sp.id = #{spId}
+	</update>
+
+	<insert id = "createSp" parameterType = "SpModel" useGeneratedKeys = "true" keyProperty = "spId">
+		INSERT INTO t_sp (sp_name, unit, contract_amount, t_material_id, t_brand_id)
+		VALUES (#{spName}, #{unit}, #{contractAmount}, #{materialId}, #{brand.brandId})
+	</insert>
+
+	<insert id = "batchCreateSp">
+		INSERT INTO t_sp (sp_name, unit, contract_amount, t_material_id, t_brand_id) VALUES
+		<foreach collection = "spList" item = "item" index = "index" separator = ",">
+			(#{item.spName}, #{item.unit}, #{item.contractAmount}, #{materialId}, #{item.brand.brandId})
+		</foreach>
+	</insert>
+</mapper>

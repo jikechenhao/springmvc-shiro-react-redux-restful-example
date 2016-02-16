@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "cn.oneayst.mapper.UserMapper">
+    <cache/>
+
+    <select id = "getUser" parameterType = "String" resultType = "UserModel">
+        SELECT
+            u.id               AS userId,
+            u.name             AS `name`,
+            u.account          AS account,
+            u.password         AS `password`,
+            u.credentials_salt AS credentialsSalt
+        FROM t_user u
+        WHERE u.account = #{account}
+    </select>
+
+    <select id = "getUserInfo" parameterType = "String" resultType = "UserModel">
+        SELECT
+            u.id   AS id,
+            u.name AS `name`
+        FROM t_user u
+        WHERE u.account = #{account}
+    </select>
+
+    <select id = "queryRole" parameterType = "long" resultType = "RoleModel">
+        SELECT r.role
+        FROM (t_user u)
+            INNER JOIN (t_user_t_role ur) ON ur.t_user_id = u.id
+            INNER JOIN (t_role r) ON r.id = ur.t_role_id
+        WHERE u.id = #{userId}
+    </select>
+
+    <select id = "queryRoleByAccount" parameterType = "String" resultType = "RoleModel">
+        SELECT
+            r.role,
+            r.url
+        FROM (t_user u)
+            INNER JOIN (t_user_t_role ur) ON ur.t_user_id = u.id
+            INNER JOIN (t_role r) ON r.id = ur.t_role_id
+        WHERE u.account = #{account}
+    </select>
+
+    <update id = "updatePwd" parameterType = "UserModel">
+        UPDATE t_user u
+        SET
+            u.password         = #{password},
+            u.credentials_salt = #{credentialsSalt}
+        WHERE u.account = #{account}
+    </update>
+
+    <insert id = "createUser" parameterType = "UserModel" useGeneratedKeys = "true" keyProperty = "userId">
+        INSERT INTO t_user (`name`, account, `password`, credentials_salt)
+        VALUES (#{name}, #{account}, #{password}, #{credentialsSalt});
+    </insert>
+
+    <insert id = "associatedUserRole">
+        INSERT INTO t_user_t_role (t_user_id, t_role_id) VALUES
+        <foreach collection = "roleList" item = "item" index = "index" separator = ",">
+            (#{userId}, #{item.roleId})
+        </foreach>
+    </insert>
+
+    <insert id = "createRole" parameterType = "RoleModel">
+        INSERT INTO t_role (role, url) VALUES (#{role}, #{url})
+    </insert>
+</mapper>

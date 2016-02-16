@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "cn.oneayst.mapper.ProjectMapper">
+	<cache type = "org.mybatis.caches.ehcache.LoggingEhcache"/>
+
+	<resultMap id = "moduleMap" type = "ModuleModel">
+		<id column = "moduleId" property = "moduleId"/>
+		<result column = "moduleName" property = "moduleName"/>
+		<collection property = "materialList" ofType = "MaterialSpModel">
+			<result column = "materialId" property = "materialId"/>
+			<result column = "spId" property = "spId"/>
+			<result column = "materialName" property = "materialName"/>
+			<result column = "spName" property = "spName"/>
+			<result column = "unit" property = "unit"/>
+			<result column = "contractAmount" property = "contractAmount"/>
+			<result column = "brandName" property = "brandName"/>
+		</collection>
+	</resultMap>
+
+	<sql id = "projectBase">
+		SELECT
+			p.id           AS projectId,
+			p.project_name AS projectName,
+			p.contract_no  AS contractNO,
+			p.create_date  AS createDate
+		FROM t_project p
+	</sql>
+
+	<select id = "getProjectNameById" resultType = "String">
+		SELECT p.project_name AS projectName
+		FROM t_project p
+		WHERE p.id = #{projectId}
+	</select>
+
+	<select id = "getProjectIdByMaterialId" parameterType = "long" resultType = "Long">
+		SELECT md.t_project_id AS projectId
+		FROM (t_material mt)
+			INNER JOIN t_module md ON md.id = mt.t_module_id
+		WHERE mt.id = #{materialId}
+	</select>
+
+	<select id = "getSerialNOA" parameterType = "long" resultType = "long">
+		SELECT s.count
+		FROM t_serial_no s
+		WHERE s.t_project_id = #{projectId} AND s.type = 'A'
+	</select>
+
+	<select id = "getSerialNOB" parameterType = "long" resultType = "long">
+		SELECT s.count
+		FROM t_serial_no s
+		WHERE s.t_project_id = #{projectId} AND s.type = 'B'
+	</select>
+
+	<select id = "queryProject" resultType = "ProjectModel">
+		<include refid = "projectBase"/>
+		ORDER BY p.create_date DESC
+	</select>
+
+	<delete id = "deleteProject" flushCache = "true">
+		DELETE p
+		FROM t_project p
+		WHERE p.id = #{projectId}
+	</delete>
+
+	<delete id = "deleteSerialNOByProjectId" parameterType = "long">
+		DELETE FROM t_serial_no
+		WHERE t_project_id = #{projectId}
+	</delete>
+
+	<update id = "updateProject" flushCache = "true">
+		UPDATE t_project p
+		SET
+			p.project_name = #{projectName},
+			p.contract_no  = #{contractNO}
+		WHERE p.id = #{projectId}
+	</update>
+
+	<update id = "increaseSerialNOA" parameterType = "long">
+		UPDATE t_serial_no s
+		SET s.count = s.count + 1
+		WHERE s.t_project_id = #{projectId} AND s.type = 'A'
+	</update>
+
+	<update id = "increaseSerialNOB" parameterType = "long">
+		UPDATE t_serial_no s
+		SET s.count = s.count + 1
+		WHERE s.t_project_id = #{projectId} AND s.type = 'B'
+	</update>
+
+	<insert id = "createProject" parameterType = "ProjectModel" useGeneratedKeys = "true" keyProperty = "projectId" flushCache = "true">
+		INSERT INTO t_project (project_name, create_date, contract_no)
+		VALUES (#{projectName}, #{createDate}, #{contractNO})
+	</insert>
+
+	<insert id = "createSerialNO" parameterType = "long">
+		INSERT INTO t_serial_no (`count`, type, t_project_id) VALUES (0, 'A', #{projectId}), (0, 'B', #{projectId})
+	</insert>
+</mapper>

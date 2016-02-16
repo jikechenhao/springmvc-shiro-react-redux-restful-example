@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+       xmlns = "http://www.springframework.org/schema/beans"
+       xmlns:task = "http://www.springframework.org/schema/task"
+       xmlns:context = "http://www.springframework.org/schema/context"
+       xsi:schemaLocation = "http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+	   http://www.springframework.org/schema/task
+	   http://www.springframework.org/schema/task/spring-task-3.2.xsd
+	   http://www.springframework.org/schema/context
+	   http://www.springframework.org/schema/context/spring-context.xsd"
+        >
+
+    <task:annotation-driven/>
+    <context:component-scan base-package = "cn.oneayst.util"/>
+
+    <!--<bean id = "mysqlUtil" class = "com.project.utils.MysqlUtil"/>-->
+
+    <!-- 数据库定时备份服务  start-->
+    <!-- 定义调用对象和调用对象的方法 -->
+    <!--<bean id = "backupDatabaseJobDetail" class = "org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
+    <!--<property name = "targetObject" ref = "mysqlUtil"/>-->
+    <!--<property name = "targetMethod" value = "exportDataBase"/>-->
+    <!--</bean>-->
+    <!--定义触发时间  -->
+    <!--<bean id = "backupDatabaseTrigger" class = "org.springframework.scheduling.quartz.CronTriggerFactoryBean">-->
+    <!--<property name = "jobDetail">-->
+    <!--<ref bean = "backupDatabaseJobDetail"/>-->
+    <!--</property>-->
+    <!--&lt;!&ndash; cron表达式 &ndash;&gt;-->
+    <!--<property name = "cronExpression">-->
+    <!--&lt;!&ndash; 每隔30分钟备份一次&ndash;&gt;-->
+    <!--<value>0 0/30 * * * ?</value>-->
+
+    <!--&lt;!&ndash; 每分钟备份一次&ndash;&gt;-->
+    <!--&lt;!&ndash;<value>0 */1 * * * ?</value>&ndash;&gt;-->
+
+    <!--&lt;!&ndash; 每天23点执行一次 &ndash;&gt;-->
+    <!--&lt;!&ndash;<value>0 0 23 * * ?</value>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;  每周星期天凌晨1点实行一次 &ndash;&gt;-->
+    <!--&lt;!&ndash;<value>0 0 1 ? * L</value>&ndash;&gt;-->
+    <!--</property>-->
+    <!--</bean>-->
+    <!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
+    <!--<bean id = "backupDatabaseScheduler" lazy-init = "false" autowire = "no" class = "org.springframework.scheduling.quartz.SchedulerFactoryBean" destroy-method = "destroy">-->
+    <!--<property name = "autoStartup" value = "true"/>-->
+    <!--<property name = "triggers">-->
+    <!--<list>-->
+    <!--<ref bean = "backupDatabaseTrigger"/>-->
+    <!--</list>-->
+    <!--</property>-->
+    <!--<property name = "waitForJobsToCompleteOnShutdown" value = "false"/>-->
+    <!--<property name = "quartzProperties">-->
+    <!--<map>-->
+    <!--<entry key = "org.quartz.scheduler.skipUpdateCheck" value = "false"/>-->
+    <!--</map>-->
+    <!--</property>-->
+    <!--</bean>-->
+    <!-- 数据库定时备份服务  end -->
+
+</beans>

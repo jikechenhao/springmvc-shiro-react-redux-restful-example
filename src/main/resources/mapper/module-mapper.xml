@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "cn.oneayst.mapper.ModuleMapper">
+	<cache type = "org.mybatis.caches.ehcache.LoggingEhcache"/>
+
+	<select id = "getModuleNameById" parameterType = "long" resultType = "String">
+		SELECT md.module_name
+		FROM t_module md
+		WHERE md.id = #{moduleId}
+	</select>
+
+	<select id = "getModuleIdListByProjectId" resultType = "Long">
+		SELECT md.id
+		FROM t_module md
+		WHERE md.t_project_id = #{projectId}
+	</select>
+
+	<select id = "queryModule" parameterType = "long" resultType = "ModuleModel">
+		SELECT
+			md.id          AS moduleId,
+			md.module_name AS moduleName
+		FROM t_module md
+		WHERE md.t_project_id = #{projectId}
+		ORDER BY (md.module_name) DESC
+	</select>
+
+	<update id = "updateModule" parameterType = "ModuleModel">
+		UPDATE t_module md
+		SET md.module_name = #{moduleName}
+		WHERE md.id = #{moduleId}
+	</update>
+
+	<delete id = "deleteModule" parameterType = "long">
+		DELETE FROM t_module
+		WHERE id = #{moduleId}
+	</delete>
+
+	<insert id = "createModule" parameterType = "ModuleModel" useGeneratedKeys = "true" keyProperty = "moduleId">
+		INSERT INTO t_module (module_name, t_project_id) VALUES (#{moduleName}, #{projectId})
+	</insert>
+
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:context = "http://www.springframework.org/schema/context"
+       xmlns:aop = "http://www.springframework.org/schema/aop"
+       xmlns:mvc = "http://www.springframework.org/schema/mvc"
+       xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+       xmlns = "http://www.springframework.org/schema/beans"
+       xsi:schemaLocation = "http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults = "true">
+            <bean class = "com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter"/>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <bean class = "org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name = "securityManager" ref = "securityManager"/>
+    </bean>
+
+    <context:component-scan
+            base-package = "
+            cn.oneayst.controller,
+            cn.oneayst.service,
+            cn.oneayst.mapper,
+            cn.oneayst.shiro,
+            cn.oneayst.aspect"
+            />
+    <!--只有在cn.oneayst包下的带有指定注解的类才会被扫描到-->
+    <!--<context:component-scan base-package = "cn.oneayst" use-default-filters = "false">-->
+    <!--<context:include-filter type = "annotation" expression = "org.springframework.stereotype.Controller"/>-->
+    <!--<context:include-filter type = "annotation" expression = "org.springframework.stereotype.Service"/>-->
+    <!--<context:include-filter type = "annotation" expression = "org.springframework.stereotype.Repository"/>-->
+    <!--<context:include-filter type = "annotation" expression = "org.springframework.web.bind.annotation.ControllerAdvice"/>-->
+    <!--</context:component-scan>-->
+
+    <!-- 使用aop需要引入aspectj和aspectjweaver的jar包 -->
+    <aop:config proxy-target-class = "true"/>
+    <!-- 启动对@AspectJ注解的支持 -->
+    <!--通知spring使用cglib而不是jdk的来生成代理方法 AOP可以拦截到Controller-->
+    <aop:aspectj-autoproxy proxy-target-class = "true"/>
+
+    <bean id = "multipartResolver" class = "org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+    <!--<bean id = "exceptionHandlerExceptionResolver" class = "org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver">-->
+    <!--</bean>-->
+    <!--<bean class = "com.project.exception.GlobalExceptionHandler"/>-->
+
+    <mvc:resources mapping = "/js/**" location = "/app/js/"/>
+    <mvc:resources mapping = "/css/**" location = "/app/css/"/>
+</beans>

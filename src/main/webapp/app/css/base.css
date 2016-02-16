@@ -1,0 +1,36 @@
+.bg {
+    background: #eee;
+    height: 100%;
+
+}
+
+.tableContainer {
+    padding: 5px 10px;
+    border-radius: 5px;
+    background: #fff;
+    width: 99%;
+    margin: 5px 0.5%;
+    text-align: center;
+    min-height: 100%;
+    overflow-y: auto;
+}
+
+.tableContainer th {
+    text-align: center;
+}
+
+.form-inline > .form-group {
+    width: 80%;
+}
+
+caption {
+    text-align: left;
+}
+
+.modal {
+    display:block;
+}
+
+.btn {
+    margin-right: 3px;
+}
