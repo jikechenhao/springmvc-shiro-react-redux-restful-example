@@ -24,8 +24,10 @@ bossboss
 
 该项目使用 intellij IDEA14 开发
 
+因为是练手项目, token加密象征性地用了BASE64而已, 实际项目中就不要这么做了.
+
 ### 多说两句
-该项目整合 spring + spring mvc + shiro + react + react-router + redux实现, 意在巩固学习的知识, 同时分享出来供大家参考学习, 水平有限, 难免有不足之处, 欢迎指点交流.  
+该项目整合 spring + spring mvc + shiro + react + react-router + redux实现, 意在巩固学习的知识, 同时分享出来供大家参考学习, 水平有限, 难免有不足之处, 欢迎指点交流.   
 Email: 15520795512@163.com
 
 ### 如何运行
