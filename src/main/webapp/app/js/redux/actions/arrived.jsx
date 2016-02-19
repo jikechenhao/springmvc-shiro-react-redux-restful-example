@@ -15,13 +15,14 @@ export function queryArrived(applyId) {
 export function updateArrived(applyId, arrivedAmount, purchaseId, module) {
     return dispatch => {
         const arrivedList = [];
-        if ('Array' === typeof arrivedAmount) {
-            arrivedAmount.forEach((item, index) => {
+        console.log('arrivedAmount', arrivedAmount[0]);
+        if (arrivedAmount[0]) {
+            for (let i = 0; i < arrivedAmount.length; ++i) {
                 arrivedList.push({
-                    arrivedAmount: item.value,
-                    purchaseId: purchaseId[index].value
+                    arrivedAmount: arrivedAmount[i].value,
+                    purchaseId: purchaseId[i].value
                 });
-            })
+            }
         } else {
             arrivedList.push({
                 arrivedAmount: arrivedAmount.value,

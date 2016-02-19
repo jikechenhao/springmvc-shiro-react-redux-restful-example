@@ -16,9 +16,6 @@ import { getColClass } from 'js/util/styleUtil';
 class ApplyRecordTable extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
         const { module } = this.props;
-        if (module !== nextProps.module) {
-            console.log('ApplyRecordTable要更新: ', module);
-        }
 
         return module !== nextProps.module;
     }

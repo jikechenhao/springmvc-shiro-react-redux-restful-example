@@ -56,7 +56,7 @@ class IntInput extends React.Component {
 
     handleValueChange(event) {
         const value = event.target.value;
-        const reg = /^(?:-?(?:0|[1-9][0-9]*))$/;
+        const reg = /^(?:-?(?:0|[0-9][0-9]*))$/;
         let success = false;
         let state = {
             value: value,
