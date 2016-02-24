@@ -1,16 +1,6 @@
 springmvc-shiro-react-redux-restful-example
 ===
 
-演示地址: https://www.oneayst.cn
-
-
-5个角色的账号(密码与账号相同):  
-admin  
-projectmanager  
-purchase  
-storage  
-bossboss
-
 ### 简介
 这是一个虚拟项目
 
