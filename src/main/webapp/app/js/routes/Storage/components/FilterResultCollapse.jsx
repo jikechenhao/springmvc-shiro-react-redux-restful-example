@@ -25,7 +25,7 @@ class FilterResultCollapse extends React.Component {
                         (!filter.spNameFilter || -1 < confirmedPurchase.spName.indexOf(filter.spNameFilter)) &&
                         (!filter.supplierFilter || -1 < confirmedPurchase.supplier.indexOf(filter.supplierFilter))
                     ) {
-                        if (!filteredModule.includes(item.moduleId)) {
+                        if (-1 >= filteredModule.indexOf(item.moduleId)) {
                             filteredModule.push(item.moduleId);
                             moduleList.push({
                                 moduleId: item.moduleId,

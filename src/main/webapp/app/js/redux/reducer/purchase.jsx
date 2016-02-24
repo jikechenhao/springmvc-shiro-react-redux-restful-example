@@ -14,8 +14,9 @@ export default function reducer(state = initialState, action = {}) {
         case ActionTypes.VERIFY_PURCHASE:
         {
             const newState = {...state};
-            if (state.purchaseList.includes(payload)) {
-                newState.purchaseList.splice(state.purchaseList.indexOf(payload), 1, {...payload, confirmed: true});
+            const index = state.purchaseList.indexOf(payload);
+            if (-1 < index) {
+                newState.purchaseList.splice(index, 1, {...payload, confirmed: true});
             }
             return newState;
         }
@@ -38,7 +39,8 @@ export default function reducer(state = initialState, action = {}) {
         case ActionTypes.REMOVE_PURCHASE:
         {
             const newState = {...state};
-            if (state.uncommittedList.includes(payload)) {
+            const index = state.uncommittedList.indexOf(payload);
+            if (-1 < index) {
                 newState.uncommittedList.splice(state.uncommittedList.indexOf(payload), 1);
             }
             return newState;

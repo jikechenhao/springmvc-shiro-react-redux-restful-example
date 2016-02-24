@@ -39,8 +39,9 @@ export default function reducer(state = initialState, action = {}) {
         case ActionTypes.DELETE_MODULE:
         {
             const newState = [...state];
-            if (state.includes(payload)) {
-                newState.splice(state.indexOf(payload), 1);
+            const index = state.indexOf(payload);
+            if (-1 < index) {
+                newState.splice(index, 1);
             }
             return newState;
         }

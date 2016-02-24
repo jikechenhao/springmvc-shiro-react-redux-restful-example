@@ -21,13 +21,13 @@ class Form extends React.Component {
     }
 
     addComponent(component) {
-        if (!this.state.componentList.includes(component)) {
+        if (-1 >= this.state.componentList.indexOf(component)) {
             this.state.componentList.push(component);
         }
     }
 
     removeComponent(component) {
-        if (this.state.componentList.includes(component)) {
+        if (-1 >= this.state.componentList.indexOf(component)) {
             this.state.componentList.splice(this.state.componentList.indexOf(component), 1);
         }
     }
